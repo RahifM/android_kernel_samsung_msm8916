@@ -354,11 +354,6 @@ static irqreturn_t atmel_twi_interrupt(int irq, void *dev_id)
 
 	if (!irqstatus)
 		return IRQ_NONE;
-<<<<<<< HEAD
-	else if (irqstatus & AT91_TWI_RXRDY)
-		at91_twi_read_next_byte(dev);
-	else if (irqstatus & AT91_TWI_TXRDY)
-=======
 	/*
 	 * In reception, the behavior of the twi device (before sama5d2) is
 	 * weird. There is some magic about RXRDY flag! When a data has been
@@ -420,8 +415,8 @@ static irqreturn_t atmel_twi_interrupt(int irq, void *dev_id)
 		at91_disable_twi_interrupts(dev);
 		complete(&dev->cmd_complete);
 	} else if (irqstatus & AT91_TWI_TXRDY) {
->>>>>>> dc728906191... Merge tag 'v3.10.106' into cm-14.1-caf-8916
 		at91_twi_write_next_byte(dev);
+        }
 
 	/* catch error flags */
 	dev->transfer_status |= status;
@@ -438,8 +433,6 @@ static int at91_do_twi_transfer(struct at91_twi_dev *dev)
 {
 	int ret;
 	bool has_unre_flag = dev->pdata->has_unre_flag;
-<<<<<<< HEAD
-=======
 
 	/*
 	 * WARNING: the TXCOMP bit in the Status Register is NOT a clear on
@@ -468,7 +461,6 @@ static int at91_do_twi_transfer(struct at91_twi_dev *dev)
 	 * STOP condition manually writing the corresponding bit into the
 	 * Control Register.
 	 */
->>>>>>> dc728906191... Merge tag 'v3.10.106' into cm-14.1-caf-8916
 
 	dev_dbg(dev->dev, "transfer: %s %d bytes.\n",
 		(dev->msg->flags & I2C_M_RD) ? "read" : "write", dev->buf_len);
@@ -476,26 +468,15 @@ static int at91_do_twi_transfer(struct at91_twi_dev *dev)
 	INIT_COMPLETION(dev->cmd_complete);
 	dev->transfer_status = 0;
 
-<<<<<<< HEAD
-=======
 	/* Clear pending interrupts, such as NACK. */
 	at91_twi_read(dev, AT91_TWI_SR);
 
->>>>>>> dc728906191... Merge tag 'v3.10.106' into cm-14.1-caf-8916
 	if (!dev->buf_len) {
 		at91_twi_write(dev, AT91_TWI_CR, AT91_TWI_QUICK);
 		at91_twi_write(dev, AT91_TWI_IER, AT91_TWI_TXCOMP);
 	} else if (dev->msg->flags & I2C_M_RD) {
 		unsigned start_flags = AT91_TWI_START;
 
-<<<<<<< HEAD
-		if (at91_twi_read(dev, AT91_TWI_SR) & AT91_TWI_RXRDY) {
-			dev_err(dev->dev, "RXRDY still set!");
-			at91_twi_read(dev, AT91_TWI_RHR);
-		}
-
-=======
->>>>>>> dc728906191... Merge tag 'v3.10.106' into cm-14.1-caf-8916
 		/* if only one byte is to be read, immediately stop transfer */
 		if (dev->buf_len <= 1 && !(dev->msg->flags & I2C_M_RECV_LEN))
 			start_flags |= AT91_TWI_STOP;
